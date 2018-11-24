@@ -1,9 +1,9 @@
 (ns readerss.core
-  (:require [clj-http.client :as client
+  (:require [clj-http.client :as client]
             [clojure.java.io :as io]
             [pantomime.extract :as extract]
             [readerss.logic :as logic]
-            [remus :refer [parse-url parse-file]]]))
+            [remus :refer [parse-url parse-file]]))
 
 (def last-acc-map (atom {}))
 
@@ -57,5 +57,5 @@
     (println "Not going to fetch feed: " feed "not url format")))
 
 (defn execute []
-  (str (map feeder (logic/split (slurp (java.io.FileReader. feedfile))))))
+  (map feeder (logic/split (slurp (java.io.FileReader. feedfile)))))
 
