@@ -15,4 +15,5 @@
   :jvm-opts ["-Xmx4g" "-server"]
   :main ^:skip-aot readerss.core
   :target-path "target/%s"
+  :resource-paths ["resources"]
   :profiles {:uberjar {:aot :all}})
