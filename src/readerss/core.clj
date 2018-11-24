@@ -1,27 +1,17 @@
 (ns readerss.core
  (:gen-class)
- (:require [digest]
-           [clojure.java.io :as io]
+ (:require [clojure.java.io :as io]
+           [readerss.logic :as logic]
            [pantomime.extract :as extract]
            [remus :refer [parse-url parse-file]]
-           [clj-http.client :as client]
-           [clojure.string :as string])
-  (:import
-            org.apache.commons.validator.UrlValidator))
+           [clj-http.client :as client]))
 
 (def last-acc-map (atom {}))
 
-(def feedfile (io/file "feeds.txt"))
+(def feedfile (io/file "feeds-sample.txt"))
 
 (defn url-to-filename [url]
-  (str "resources/"(digest/sha-256 url)))
-
-(defn onlyhash [url]
-  (digest/sha-256 url))
-
-(defn valid-url? [url-str]
-  (let [validator (UrlValidator.)]
-    (.isValid validator url-str)))
+  (str "resources/"(logic/digest url)))
 
 (defn savedisk [file url]
   (def filez (extract/parse (io/input-stream file)))
@@ -36,11 +26,8 @@
     (savedisk file url)
     (catch Exception e (println "ERROR ON create" url))))
 
-(defn splitter [s]
-  (string/split s #"\n"))
-
 (defn fetcher [url]
-  (if (valid-url? url)
+  (if (logic/valid-url? url)
    (create url) 
    (println "Not a valid url: " url)))
 
@@ -54,14 +41,9 @@
       (println "Fetching URL:" url)
       (fetcher url))))
 
-(defn fetcher [url]
-  (if (valid-url? url)
-   (create url)
-   (println "Not a valid url: " url)))
-
 (defn extract-feeds [feed]
   (try
-  (def url-hashed (onlyhash feed))
+  (def url-hashed (logic/digest feed))
   (def result (parse-url feed {:headers {"User-Agent" "Mozilla/5.0 (Macintosh; Intel Mac"}}))
   (def status-code (:status (:response result)))
   (def last-modified (:last-modified (:headers (:response result))))
@@ -71,16 +53,17 @@
   (catch Exception e (println "ERROR ON extract-feeds" e))))
 
 (defn feeder [feed]
-  (if (valid-url? feed)
+  (if (logic/valid-url? feed)
     (map extract-feeds [feed])
     (println "Not going to fetch feed: " feed "not url format")))
 
 (defn execute []
-  (str (map feeder (splitter (slurp (java.io.FileReader. feedfile))))))
+  (str (map feeder (logic/split (slurp (java.io.FileReader. feedfile))))))
 
 (defn -main
  [& args]
-
   (def randnumb (rand 50000))
   (println "Using:"randnumb "as random number for while true sleep delay increase/decrease as you wish")
-  (while true (Thread/sleep randnumb) (execute)))
+  (execute)
+  #_(while true (Thread/sleep randnumb) (execute)))
+
