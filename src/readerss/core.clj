@@ -7,8 +7,6 @@
 
 (def last-acc-map (atom {}))
 
-(def feedfile (io/file "feeds-sample.txt"))
-
 (defn url-to-filename [url]
   (str "resources/"(logic/digest url)))
 
@@ -56,6 +54,6 @@
     (map extract-feeds [feed])
     (println "Not going to fetch feed: " feed "not url format")))
 
-(defn execute []
-  (map feeder (logic/split (slurp (java.io.FileReader. feedfile)))))
+(defn execute [feed-file-path]
+  (map feeder (logic/split (slurp (io/file feed-file-path)))))
 
