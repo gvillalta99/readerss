@@ -1,9 +1,9 @@
 (ns readerss.core
- (:require [clojure.java.io :as io]
-           [readerss.logic :as logic]
-           [pantomime.extract :as extract]
-           [remus :refer [parse-url parse-file]]
-           [clj-http.client :as client]))
+  (:require [clj-http.client :as client
+            [clojure.java.io :as io]
+            [pantomime.extract :as extract]
+            [readerss.logic :as logic]
+            [remus :refer [parse-url parse-file]]]))
 
 (def last-acc-map (atom {}))
 
@@ -13,43 +13,43 @@
   (str "resources/"(logic/digest url)))
 
 (defn savedisk [file url]
-  (def filez (extract/parse (io/input-stream file)))
+  (let [filez (extract/parse (io/input-stream file))]
     (cond
-      (re-find #"pdf" (str (:content-type filez))) (spit (str (url-to-filename url)"-PDF-EXTRACTED") (:text filez))
-      (re-find #"html" (str (:content-type filez))) (spit (str (url-to-filename url)"-HTML-EXTRACTED") (:text filez))
-      :else (println "Sorry but i can't handle this type of file")))
+      (re-find #"pdf" (str (:content-type filez))) (spit (str (url-to-filename url) "-PDF-EXTRACTED") (:text filez))
+      (re-find #"html" (str (:content-type filez))) (spit (str (url-to-filename url) "-HTML-EXTRACTED") (:text filez))
+      :else (println "Sorry but i can't handle this type of file"))))
 
 (defn create [url]
   (try
-  (def file (:body (client/get url {:as :stream})))
-    (savedisk file url)
+    (let [file (:body (client/get url {:as :stream}))]
+      (savedisk file url))
     (catch Exception e (println "ERROR ON create" url))))
 
 (defn fetcher [url]
   (if (logic/valid-url? url)
-   (create url) 
-   (println "Not a valid url: " url)))
+    (create url)
+    (println "Not a valid url: " url)))
 
 (defn parsefile [url]
-  (def pdffile (.exists (io/as-file (str (url-to-filename url)"-PDF-EXTRACTED"))))
-  (def htmlfile (.exists (io/as-file (str (url-to-filename url)"-HTML-EXTRACTED"))))
-  (if (or htmlfile pdffile) 
-    (do
-      (println "URL:" url "already fetched"))
-    (do
-      (println "Fetching URL:" url)
-      (fetcher url))))
+  (let [pdffile  (.exists (io/as-file (str (url-to-filename url) "-PDF-EXTRACTED")))
+        htmlfile (.exists (io/as-file (str (url-to-filename url) "-HTML-EXTRACTED")))]
+    (if (or htmlfile pdffile)
+      (do
+        (println "URL:" url "already fetched"))
+      (do
+        (println "Fetching URL:" url)
+        (fetcher url)))))
 
 (defn extract-feeds [feed]
   (try
-  (def url-hashed (logic/digest feed))
-  (def result (parse-url feed {:headers {"User-Agent" "Mozilla/5.0 (Macintosh; Intel Mac"}}))
-  (def status-code (:status (:response result)))
-  (def last-modified (:last-modified (:headers (:response result))))
-  (def entries (map :link (:entries (:feed result))))
-  (swap! last-acc-map assoc url-hashed last-modified)
-  (map parsefile entries)
-  (catch Exception e (println "ERROR ON extract-feeds" e))))
+    (let [url-hashed (logic/digest feed)
+          result (parse-url feed {:headers {"User-Agent" "Mozilla/5.0 (Macintosh; Intel Mac"}})
+          status-code (:status (:response result))
+          last-modified (:last-modified (:headers (:response result)))
+          entries (map :link (:entries (:feed result)))]
+      (swap! last-acc-map assoc url-hashed last-modified)
+      (map parsefile entries))
+    (catch Exception e (println "ERROR ON extract-feeds" e))))
 
 (defn feeder [feed]
   (if (logic/valid-url? feed)
