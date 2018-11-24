@@ -1,5 +1,4 @@
 (ns readerss.core
- (:gen-class)
  (:require [clojure.java.io :as io]
            [readerss.logic :as logic]
            [pantomime.extract :as extract]
@@ -59,11 +58,4 @@
 
 (defn execute []
   (str (map feeder (logic/split (slurp (java.io.FileReader. feedfile))))))
-
-(defn -main
- [& args]
-  (def randnumb (rand 50000))
-  (println "Using:"randnumb "as random number for while true sleep delay increase/decrease as you wish")
-  (execute)
-  #_(while true (Thread/sleep randnumb) (execute)))
 

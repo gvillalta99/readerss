@@ -13,7 +13,7 @@
                  [overtone/at-at "1.2.0"]
                  [remus "0.1.0-SNAPSHOT"]]
   :jvm-opts ["-Xmx4g" "-server"]
-  :main ^:skip-aot readerss.core
+  :main ^:skip-aot readerss.cli
   :target-path "target/%s"
   :resource-paths ["resources"]
   :profiles {:uberjar {:aot :all}})
