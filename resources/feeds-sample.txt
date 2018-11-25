@@ -1,0 +1,8 @@
+http://blog.mdsec.co.uk/feeds/posts/default?alt=rss
+http://blog.noticebored.com/feeds/posts/default?alt=rss
+http://blog.nvisium.com/feeds/posts/default?alt=rss
+http://blog.opensecurityresearch.com/feeds/posts/default?alt=rss
+http://blog.ropchain.com/feed/
+http://blog.sec-consult.com/feeds/posts/default?alt=rss
+http://blog.sensecy.com/feed/
+invalid.url

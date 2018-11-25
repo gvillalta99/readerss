@@ -2,11 +2,11 @@
   (:require [clojure.test :refer :all]
             [readerss.logic :as logic]))
 
-(deftest valid-url?
+(deftest is-url?
   (testing "a valid url"
-    (is (= true (logic/valid-url? "http://google.com"))))
+    (is (= true (logic/is-url? "http://google.com"))))
   (testing "a invalid url"
-    (is (= false (logic/valid-url? "google.com")))))
+    (is (= false (logic/is-url? "google.com")))))
 
 (deftest digest
   (testing "with a string"

@@ -3,7 +3,7 @@
             [clojure.string :as string])
   (:import [org.apache.commons.validator UrlValidator]))
 
-(defn valid-url?
+(defn is-url?
   [url-str]
   (let [validator (UrlValidator.)]
     (.isValid validator url-str)))

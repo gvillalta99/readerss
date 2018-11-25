@@ -24,7 +24,7 @@
     (catch Exception e (println "ERROR ON create" url))))
 
 (defn fetcher [url]
-  (if (logic/valid-url? url)
+  (if (logic/is-url? url)
     (create url)
     (println "Not a valid url: " url)))
 
@@ -47,13 +47,13 @@
           entries (map :link (:entries (:feed result)))]
       (swap! last-acc-map assoc url-hashed last-modified)
       (map parsefile entries))
-    (catch Exception e (println "ERROR ON extract-feeds" e))))
+    (catch Exception e (println "ERROR ON extract-feeds" feed))))
 
 (defn feeder [feed]
-  (if (logic/valid-url? feed)
+  (if (logic/is-url? feed)
     (map extract-feeds [feed])
     (println "Not going to fetch feed: " feed "not url format")))
 
-(defn execute [feed-file-path]
-  (map feeder (logic/split (slurp (io/file feed-file-path)))))
+(defn execute [url-list]
+  (map feeder url-list))
 
