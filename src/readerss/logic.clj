@@ -14,3 +14,6 @@
 
 (defn split [s]
   (string/split s #"\n"))
+
+(defn url->base-filename [url]
+  (str "resources/" (digest url)))

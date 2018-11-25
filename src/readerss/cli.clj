@@ -12,14 +12,13 @@
    Reads every file and extract every line with an url."
   [file-paths]
   (->> file-paths
-       dedupe
        (filter identity)                                    ; Remove nil
+       dedupe                                               ; Remove duplicated paths
        (map io/file)                                        ; Convert to file
        (filter fs/is-file?)                                 ; Check if it is a file
        (pmap slurp)                                         ; Read files contents
        (mapcat logic/split)                                 ; Split and joint lines
-       dedupe                                               ; Remove duplicates
-       (filter logic/is-url?)                               ; Remove invalid urls
+       dedupe                                               ; Remove url duplicates
        doall))                                              ; Force lazy sequence completion
 
 (defn -main
