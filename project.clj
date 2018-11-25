@@ -1,6 +1,5 @@
 (defproject readerss "0.1.1"
   :description "RSS feed extracter, it will consume a rss feed and retrieve its entries as raw text, also works with pdf"
-  :url "https://www.nubank.com.br"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[adamwynne/feedparser-clj "0.5.2"]
