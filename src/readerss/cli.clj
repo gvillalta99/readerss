@@ -23,7 +23,8 @@
 
 (defn -main
   [& args]
-  (let [randnumb (rand 50000)]
+  (let [randnumb (rand 50000)
+        paths    (or (not-empty args) [feed-file-path])]
     (println "Using:" randnumb "as random number for while true sleep delay increase/decrease as you wish")
-    (println (core/execute (load-url-list [feed-file-path]))))
-  #_(while true (Thread/sleep randnumb) (execute)))
+    (println "Running for feed files:" paths)
+    (core/execute (load-url-list paths))))
