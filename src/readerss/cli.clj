@@ -12,11 +12,11 @@
    Reads every file and extract every line with an url."
   [file-paths]
   (->> file-paths
-       (filter identity)                                    ; Remove nil
+       (filterv identity)                                    ; Remove nil
        dedupe                                               ; Remove duplicated paths
-       (map io/file)                                        ; Convert to file
-       (filter fs/is-file?)                                 ; Check if it is a file
-       (pmap slurp)                                         ; Read files contents
+       (mapv io/file)                                        ; Convert to file
+       (filterv fs/is-file?)                                 ; Check if it is a file
+       (mapv slurp)                                         ; Read files contents
        (mapcat logic/split)                                 ; Split and joint lines
        dedupe                                               ; Remove url duplicates
        doall))                                              ; Force lazy sequence completion

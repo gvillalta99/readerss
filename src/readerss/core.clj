@@ -102,11 +102,11 @@
 
 (defn execute [url-list]
   (->> url-list
-       (map url-str->internal)
-       (map validate-url)
-       (filter identity)
-       (pmap with-feed-results)
-       (pmap with-cached-feed-entries)
-       (pmap with-feed-entries)
-       (pmap cache-feed-entries)
+       (mapv url-str->internal)
+       (mapv validate-url)
+       (filterv identity)
+       (mapv with-feed-results)
+       (mapv with-cached-feed-entries)
+       (mapv with-feed-entries)
+       (mapv cache-feed-entries)
        doall))
